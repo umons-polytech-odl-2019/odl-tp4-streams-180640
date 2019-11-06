@@ -33,11 +33,11 @@ public class Exercice4 {
             filePath = args[0];
         }
 
-        try (Stream<String> stream = Files.lines(Paths.get(filePath))) {
+        try (Stream<String> parallelStream = Files.lines(Paths.get(filePath))) {
             String regex = new String("[ ,\\.;:'\\-_()\\=’\\|\\[\\]\\{\\}\"@\\*#/\\?\\!«»]");
 
             Map<String, Long> words =
-                    stream.flatMap(line -> Arrays.stream(line.split(regex)))  // découpe en utilisant une regex pour trouver les séparateurs
+                    parallelStream.flatMap(line -> Arrays.stream(line.split(regex)))  // découpe en utilisant une regex pour trouver les séparateurs
                     .filter(line -> Optional.ofNullable(line).orElse("").length() != 0)  // enlève les lignes vides
                     .filter(word -> word.length() >= 6 && word.length() <= 12)  // garde uniquement les mots d'une longueur de 6 à 12 lettres
                     .map(String::toLowerCase)  // les mets tous en minuscule

@@ -1,6 +1,7 @@
 package be.ac.umons.exercice2;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
 
@@ -29,6 +30,9 @@ public class Student {
 
     public double averageScore() {
 
+        return scoreByCourse.values().stream().mapToInt(Integer::intValue).average().orElse(0.0);
+
+/**
         int count = 0;
         double totalScore = 0.0;
         for (Integer score : scoreByCourse.values()) {
@@ -36,13 +40,15 @@ public class Student {
             totalScore += score;
         }
         return totalScore / count;
+ **/
     }
 
     public String bestCourse() {
 
         String bestCourse = "";
         Integer bestScore = 0;
-
+        return scoreByCourse.entrySet().stream().sorted(Map.Entry.comparingByValue(Comparator.reverseOrder())).findFirst().map(Map.Entry::getKey).toString();
+/**
         for (Map.Entry<String, Integer> e : scoreByCourse.entrySet()) {
             if (e.getValue() > bestScore) {
                 bestCourse = e.getKey();
@@ -51,21 +57,25 @@ public class Student {
         }
 
         return bestCourse;
+ **/
     }
 
-    public int bestScore() {
-
+    public Integer bestScore() {
+        return scoreByCourse.entrySet().stream().sorted(Map.Entry.comparingByValue(Comparator.reverseOrder())).findFirst().map(Map.Entry::getValue).orElse(0);
+        /**
         int bestScore = 0;
         for (Map.Entry<String, Integer> entry : scoreByCourse.entrySet()) {
             if (entry.getValue() > bestScore)
                 bestScore = entry.getValue();
         }
         return bestScore;
-
+**/
     }
 
     public Set<String> failedCourses() {
 
+        return scoreByCourse.entrySet().stream().filter(entry -> entry.getValue() < 12).sorted(Map.Entry.comparingByValue(Comparator.reverseOrder())).map(Map.Entry::getKey).collect(Collectors.toCollection(HashSet::new));
+/**
         List<Map.Entry<String, Integer>> filteredEntries = new ArrayList<>();
         for (Map.Entry<String, Integer> entry : scoreByCourse.entrySet()) {
             if (entry.getValue() < 12) {
@@ -78,6 +88,7 @@ public class Student {
             failedCourses.add(entry.getKey());
         }
         return failedCourses;
+ **/
     }
 
     public boolean isSuccessful() {
@@ -85,11 +96,13 @@ public class Student {
     }
 
     public Set<String> attendedCourses() {
-
+        return scoreByCourse.keySet().stream().sorted().collect(Collectors.toCollection(LinkedHashSet::new));
+/**
         Set<String> courses = new LinkedHashSet<String>();
         for (String courseName : scoreByCourse.keySet())
             courses.add(courseName);
         return courses;
+ **/
     }
 
     public String getName() {
